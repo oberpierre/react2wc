@@ -1,0 +1,46 @@
+{
+  "name": "react2wc",
+  "version": "0.1.o",
+  "main": "index.js",
+  "author": "Pierre Obermaier",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint . && prettier --check .",
+    "prettify": "prettier --write .",
+    "prepare": "husky install",
+    "test": "jest"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.1.2",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/parser": "^5.39.0",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "husky": "^8.0.1",
+    "jest": "^29.1.2",
+    "jest-environment-jsdom": "^29.1.2",
+    "lint-staged": "^13.0.3",
+    "prettier": "2.7.1",
+    "ts-jest": "^29.0.3",
+    "typescript": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oberpierre/react2wc.git"
+  },
+  "keywords": [
+    "component",
+    "library",
+    "react",
+    "typescript",
+    "webcomponent",
+    "web"
+  ]
+}
