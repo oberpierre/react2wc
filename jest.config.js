@@ -22,7 +22,8 @@ module.exports = {
       statements: -10,
     },
   },
+  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', { tsconfig: { esModuleInterop: true } }],
+    '^.+\\.tsx?$': ['ts-jest', { tsconfig: './tsconfig.test.json' }],
   },
 };
