@@ -28,31 +28,65 @@ abstract class BaseElement<
   // eslint-disable-next-line @typescript-eslint/ban-types
   P extends {} = ComponentProps<T>
 > extends LitElement {
-  protected component: Promise<T>;
-  protected react: Promise<ReactAbstraction>;
-  protected reactDom: Promise<ReactDomAbstraction>;
+  protected root: Root | undefined;
+  protected component: T | undefined;
+  protected react: ReactAbstraction | undefined;
+  protected reactDom: ReactDomAbstraction | undefined;
 
   constructor() {
     super();
-    this.component = this.getComponent();
-    this.react = import('react');
-    this.reactDom = import('react-dom/client');
   }
 
   render(): TemplateResult {
-    Promise.all([this.component, this.react, this.reactDom])
-      .then(([component, react, reactDom]) => {
-        if (!this.shadowRoot) {
-          throw new Error("Couldn't render component. ShadowRoot unavailable.");
-        }
-        const root = reactDom.createRoot(this.shadowRoot);
-        root.render(react.createElement(component, null, []));
-      })
-      .catch(console.error);
+    if (!this.root) {
+      // Importing component and react dependencies upon first render, this way we can split the bundle into chunks, making the chunk
+      // registering the custom elements small. Therefore having little impact on the page load if no custom element is used on certain pages.
+      // When the custom elements are actually mounted, the chunks containing the dependencies are requested.
+      Promise.all([
+        this.getComponent(),
+        import('react'),
+        import('react-dom/client'),
+      ])
+        .then(([component, react, reactDom]) => {
+          this.component = component;
+          this.react = react;
+          this.reactDom = reactDom;
+        })
+        .then(() => {
+          if (!this.shadowRoot) {
+            throw new Error(
+              'Unexpected error while rendering component. ShadowRoot unavailable.'
+            );
+          } else if (!this.component || !this.react || !this.reactDom) {
+            throw new Error(
+              "Unexpected error while rendering component. Dependencies couldn't be loaded."
+            );
+          }
+          this.root = this.reactDom.createRoot(this.shadowRoot);
+          this.root.render(
+            this.react.createElement(this.component, this.getProperties(), [])
+          );
+        })
+        .catch(console.error);
+    } else {
+      // rerender
+      if (!this.react || !this.component) {
+        console.error(
+          new Error('Unexpected error while rerendering component.')
+        );
+      } else {
+        this.root.render(
+          this.react.createElement(this.component, this.getProperties(), [])
+        );
+      }
+    }
+
     return html``;
   }
 
   abstract getComponent(): Promise<T>;
+
+  abstract getProperties(): P;
 }
 
 export default BaseElement;
