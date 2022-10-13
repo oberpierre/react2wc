@@ -1,12 +1,12 @@
 import { html, LitElement, TemplateResult } from 'lit';
-import {
+import type {
   Attributes,
   ComponentProps,
   ComponentType,
   ReactElement,
   ReactNode,
 } from 'react';
-import { Root, RootOptions } from 'react-dom/client';
+import type { Root, RootOptions } from 'react-dom/client';
 
 type ReactAbstraction = {
   createElement<P extends Record<string, unknown>>(
@@ -37,7 +37,7 @@ abstract class BaseElement<
     super();
   }
 
-  render(): TemplateResult {
+  override render(): TemplateResult {
     if (!this.root) {
       // Importing component and react dependencies upon first render, this way we can split the bundle into chunks, making the chunk
       // registering the custom elements small. Therefore having little impact on the page load if no custom element is used on certain pages.

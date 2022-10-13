@@ -1,6 +1,7 @@
 {
   "name": "react2wc",
-  "version": "0.1.o",
+  "version": "0.1.0",
+  "type": "module",
   "main": "index.js",
   "author": "Pierre Obermaier",
   "license": "MIT",
