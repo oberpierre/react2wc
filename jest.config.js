@@ -5,6 +5,7 @@
 
 module.exports = {
   testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['./jest-setup.js'],
   collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.ts',
@@ -24,6 +25,7 @@ module.exports = {
   },
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', { tsconfig: './tsconfig.test.json' }],
+    '^.+\\.[tj]sx?$': ['ts-jest', { tsconfig: './tsconfig.test.json' }],
   },
+  transformIgnorePatterns: ['node_modules/(?!@?lit.*/)'],
 };

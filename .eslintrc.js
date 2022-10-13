@@ -21,6 +21,7 @@ module.exports = {
     'dist',
     '.eslintrc.js',
     'jest.config.js',
+    'jest-setup.js',
   ],
   plugins: ['@typescript-eslint'],
   rules: {},
