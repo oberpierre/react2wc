@@ -4,6 +4,6 @@
     "rootDir": ".",
     "allowJs": true
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "./jest-setup.ts"],
+  "include": ["src/**/*", "test/**/*", "./jest-setup.ts"],
   "exclude": ["node_modules"]
 }

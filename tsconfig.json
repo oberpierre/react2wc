@@ -1,6 +1,6 @@
-// Based on https://github.com/tsconfig/bases/blob/main/bases/node16-strictest-esm.combined.json
 {
   "$schema": "https://json.schemastore.org/tsconfig",
+  "$basedOn": "https://github.com/tsconfig/bases/blob/main/bases/node16-strictest-esm.combined.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
@@ -25,8 +25,13 @@
     "noUnusedParameters": true,
     "importsNotUsedAsValues": "error",
     "declaration": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@react2wc-test": ["test/common/index.ts"]
+    }
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "src/**/*.test.ts"]
 }

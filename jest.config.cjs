@@ -2,6 +2,8 @@
  * For a detailed explanation regarding each configuration property and type check, visit:
  * https://jestjs.io/docs/configuration
  */
+const { pathsToModuleNameMapper } = require('ts-jest');
+const { compilerOptions } = require('./tsconfig.json');
 
 module.exports = {
   testEnvironment: 'jsdom',
@@ -24,6 +26,9 @@ module.exports = {
       statements: -10,
     },
   },
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
+    prefix: '<rootDir>/',
+  }),
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   transform: {
     '^.+\\.[tj]sx?$': ['ts-jest', { tsconfig: './tsconfig.test.json' }],

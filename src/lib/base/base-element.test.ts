@@ -1,23 +1,13 @@
 import { getByRole, waitFor } from '@testing-library/dom';
 import { property } from 'lit/decorators.js';
-import * as React from 'react';
+import { HelloWorld, HelloWorldComp, HelloWorldProps } from '@react2wc-test';
 import BaseElement from './base-element';
-
-type HelloWorldProps = {
-  name: string;
-};
-
-const HelloWorld: React.FunctionComponent<HelloWorldProps> = ({ name }) => {
-  return React.createElement('h1', null, [`Hello ${name}`]);
-};
-
-type HelloWorldComp = typeof HelloWorld;
 
 class HelloWorldWebcomponent extends BaseElement<HelloWorldComp> {
   @property({ type: String })
   name: string | undefined;
 
-  getComponent(): Promise<React.FunctionComponent<HelloWorldProps>> {
+  getComponent(): Promise<HelloWorldComp> {
     return Promise.resolve(HelloWorld);
   }
 
