@@ -2,7 +2,8 @@
   "name": "react2wc",
   "version": "0.1.0",
   "type": "module",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "author": "Pierre Obermaier",
   "license": "MIT",
   "scripts": {
