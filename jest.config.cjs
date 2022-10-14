@@ -5,6 +5,7 @@
 
 module.exports = {
   testEnvironment: 'jsdom',
+  testMatch: ['**/src/**/?(*.)+(spec|test).[jt]s?(x)'],
   setupFilesAfterEnv: ['./jest-setup.ts'],
   collectCoverage: true,
   collectCoverageFrom: [

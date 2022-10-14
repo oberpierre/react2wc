@@ -4,6 +4,7 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": "dist/bin/index.js",
   "author": "Pierre Obermaier",
   "license": "MIT",
   "scripts": {
@@ -11,7 +12,8 @@
     "lint": "eslint . && prettier --check .",
     "prettify": "prettier --write .",
     "prepare": "husky install",
-    "test": "jest"
+    "test": "jest",
+    "test:e2e": "jest --config=jest.e2e.config.cjs"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
@@ -51,8 +53,9 @@
     "web"
   ],
   "dependencies": {
-    "@types/react": "^18.0.21",
+    "@types/react": ">= 16",
     "@types/react-dom": "^18.0.6",
+    "commander": "^9.4.1",
     "lit": "^2.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
