@@ -1,3 +1,4 @@
+import 'abort-controller/polyfill.js';
 import { readFile, writeFile, WriteFileOptions } from 'fs';
 import { basename, extname, resolve } from 'path';
 
