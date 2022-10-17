@@ -26,11 +26,8 @@
     "importsNotUsedAsValues": "error",
     "declaration": true,
     "experimentalDecorators": true,
-    "jsx": "react",
-    "baseUrl": ".",
-    "paths": {
-      "@react2wc-test": ["test/common/index.ts"]
-    }
+    "sourceMap": true,
+    "jsx": "react"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "src/**/*.test.ts"]

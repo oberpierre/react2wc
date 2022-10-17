@@ -2,7 +2,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "rootDir": ".",
-    "allowJs": true
+    "allowJs": true,
+    "baseUrl": ".",
+    "paths": {
+      "@react2wc-test": ["test/common/index.ts"]
+    }
   },
   "include": ["src/**/*", "test/**/*", "./jest-setup.ts"],
   "exclude": ["node_modules"]

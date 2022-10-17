@@ -3,7 +3,7 @@
  * https://jestjs.io/docs/configuration
  */
 const { pathsToModuleNameMapper } = require('ts-jest');
-const { compilerOptions } = require('./tsconfig.json');
+const { compilerOptions } = require('./tsconfig.test.json');
 
 module.exports = {
   testEnvironment: 'jsdom',
