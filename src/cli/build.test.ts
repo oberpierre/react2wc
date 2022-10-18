@@ -1,29 +1,23 @@
-import build, { getWebcomponentFile } from './build';
 import fs from 'fs';
+import * as Analyzer from './analyze.js';
+import build, { getWebcomponentFile } from './build';
 
-type ReadFileSpy = (
-  path: fs.PathOrFileDescriptor,
-  opts: Record<string, string>,
-  callback: (err: Error) => void
-) => void;
+jest.mock('./analyze.js');
+
 type WriteFileSpy = (
   path: fs.PathOrFileDescriptor,
   data: Buffer,
   opts: fs.WriteFileOptions,
   callback: (err: Error) => void
 ) => void;
-const _readFileMock = jest.fn((_file, _opts, callback) =>
-  callback(null, 'Mocked file content')
-);
 const _writeFileMock = jest.fn((_file, _data, _opts, callback) =>
   callback(null)
 );
 
 beforeEach(() => {
+  // jest.resetAllMocks();
+  // jest.resetModules();
   jest.clearAllMocks();
-  (
-    jest.spyOn(fs, 'readFile') as unknown as jest.MockedFunction<ReadFileSpy>
-  ).mockImplementation(_readFileMock);
   (
     jest.spyOn(fs, 'writeFile') as unknown as jest.MockedFunction<WriteFileSpy>
   ).mockImplementation(_writeFileMock);
@@ -40,7 +34,7 @@ describe('build', () => {
       'foobar.jsx',
     ]);
 
-    expect(fs.readFile).toHaveBeenCalledTimes(4);
+    expect(Analyzer.analyzeComponent).toHaveBeenCalledTimes(4);
     expect(fs.writeFile).toHaveBeenCalledTimes(4);
     [
       '/some/absolute/path/foo.tsx',
@@ -48,10 +42,9 @@ describe('build', () => {
       '/usr/project/react2wc/also/relative/path/foo.js',
       '/usr/project/react2wc/foobar.jsx',
     ].forEach((inputPath) =>
-      expect(fs.readFile).toHaveBeenCalledWith(
+      expect(Analyzer.analyzeComponent).toHaveBeenCalledWith(
         inputPath,
-        { signal: expect.any(AbortSignal) },
-        expect.any(Function)
+        undefined
       )
     );
     [
@@ -69,29 +62,21 @@ describe('build', () => {
     );
   });
 
-  it('should abort early when there is an error reading a file', async () => {
-    // need to be cased because there are multiple readFile overloads
-    const test = (
-      jest.spyOn(fs, 'readFile') as unknown as jest.MockedFunction<ReadFileSpy>
-    ).mockImplementation((_path, _opts, callback: (err: Error) => void) => {
-      callback({ name: 'ENOENT', message: 'no such file or directory' });
-    });
-    const stringBuilder: string[] = [];
+  it('should warn when there is an error analyzing a file and keep going', async () => {
+    jest.spyOn(Analyzer, 'analyzeComponent').mockImplementationOnce(() => []);
+    const consoleWarn: string[] = [];
     jest
-      .spyOn(console, 'error')
+      .spyOn(console, 'warn')
       .mockImplementation((message, ...args) =>
-        stringBuilder.push(
-          [message, ...args].map((arg) => String(arg)).join(' ')
-        )
+        consoleWarn.push([message, ...args].map((arg) => String(arg)).join(' '))
       );
     await build(['/absolute/path/read/foo.tsx', '/absolute/path/read/bar.tsx']);
 
-    expect(stringBuilder.join()).toMatchInlineSnapshot(
-      '"ENOENT: no such file or directory"'
+    expect(consoleWarn.join('\n')).toMatchInlineSnapshot(
+      `"Couldn't detect component type for /absolute/path/read/foo.tsx."`
     );
-    expect(fs.readFile).toHaveBeenCalledTimes(2);
-    expect(fs.writeFile).toHaveBeenCalledTimes(0);
-    test.mockRestore();
+    expect(Analyzer.analyzeComponent).toHaveBeenCalledTimes(2);
+    expect(fs.writeFile).toHaveBeenCalledTimes(1);
   });
 
   it('should abort early when there is an error creating a file', async () => {
@@ -105,11 +90,11 @@ describe('build', () => {
         callback({ name: 'EPERM', message: 'operation not permitted' });
       }
     );
-    const stringBuilder: string[] = [];
+    const consoleError: string[] = [];
     jest
       .spyOn(console, 'error')
       .mockImplementation((message, ...args) =>
-        stringBuilder.push(
+        consoleError.push(
           [message, ...args].map((arg) => String(arg)).join(' ')
         )
       );
@@ -118,10 +103,10 @@ describe('build', () => {
       '/absolute/path/write/bar.tsx',
     ]);
 
-    expect(stringBuilder.join()).toMatchInlineSnapshot(
+    expect(consoleError.join()).toMatchInlineSnapshot(
       '"EPERM: operation not permitted"'
     );
-    expect(fs.readFile).toHaveBeenCalledTimes(2);
+    expect(Analyzer.analyzeComponent).toHaveBeenCalledTimes(2);
     expect(fs.writeFile).toHaveBeenCalledTimes(2);
   });
 

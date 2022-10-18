@@ -30,5 +30,5 @@
     "jsx": "react"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "src/**/*.test.ts"]
+  "exclude": ["node_modules", "**/__mocks__", "src/**/*.test.ts"]
 }

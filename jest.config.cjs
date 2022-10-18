@@ -30,6 +30,7 @@ module.exports = {
     prefix: '<rootDir>/',
   }),
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  resolver: 'ts-jest-resolver',
   transform: {
     '^.+\\.[tj]sx?$': ['ts-jest', { tsconfig: './tsconfig.test.json' }],
   },
