@@ -1,32 +1,39 @@
-import fs from 'fs';
-import * as Analyzer from './analyze.js';
-import build, { getWebcomponentFile } from './build';
-
-jest.mock('./analyze.js');
+import { jest } from '@jest/globals';
+import type { PathOrFileDescriptor, WriteFileOptions } from 'fs';
 
 type WriteFileSpy = (
-  path: fs.PathOrFileDescriptor,
+  path: PathOrFileDescriptor,
   data: Buffer,
-  opts: fs.WriteFileOptions,
-  callback: (err: Error) => void
+  opts: WriteFileOptions,
+  callback: (err: Error | null) => void
 ) => void;
-const _writeFileMock = jest.fn((_file, _data, _opts, callback) =>
+const _writeFileMock = jest.fn<WriteFileSpy>((_file, _data, _opts, callback) =>
   callback(null)
 );
 
+jest.unstable_mockModule('./analyze', () => {
+  return import('./__mocks__/analyze');
+});
+jest.unstable_mockModule('fs', () => ({
+  __esModule: true,
+  ...(jest.requireActual('fs') as typeof fs),
+  writeFile: jest.fn(_writeFileMock),
+}));
+const fs = await import('fs');
+const Analyzer = await import('./analyze');
+
 beforeEach(() => {
-  // jest.resetAllMocks();
-  // jest.resetModules();
   jest.clearAllMocks();
-  (
-    jest.spyOn(fs, 'writeFile') as unknown as jest.MockedFunction<WriteFileSpy>
-  ).mockImplementation(_writeFileMock);
+  jest.restoreAllMocks();
 });
 
 describe('build', () => {
   it('should call readFile with resolved path of component and writeFile with target path', async () => {
-    jest.spyOn(console, 'log').mockImplementation();
+    jest.spyOn(console, 'log').mockReturnValue();
     jest.spyOn(process, 'cwd').mockReturnValue('/usr/project/react2wc');
+
+    const { default: build } = await import('./build');
+
     await build([
       '/some/absolute/path/foo.tsx',
       './relative/path/bar.ts',
@@ -63,13 +70,16 @@ describe('build', () => {
   });
 
   it('should warn when there is an error analyzing a file and keep going', async () => {
-    jest.spyOn(Analyzer, 'analyzeComponent').mockImplementationOnce(() => []);
+    jest.spyOn(console, 'log').mockReturnValue();
+    jest.spyOn(Analyzer, 'analyzeComponent').mockReturnValueOnce([]);
     const consoleWarn: string[] = [];
     jest
       .spyOn(console, 'warn')
       .mockImplementation((message, ...args) =>
         consoleWarn.push([message, ...args].map((arg) => String(arg)).join(' '))
       );
+    const { default: build } = await import('./build');
+
     await build(['/absolute/path/read/foo.tsx', '/absolute/path/read/bar.tsx']);
 
     expect(consoleWarn.join('\n')).toMatchInlineSnapshot(
@@ -98,6 +108,8 @@ describe('build', () => {
           [message, ...args].map((arg) => String(arg)).join(' ')
         )
       );
+    const { default: build } = await import('./build');
+
     await build([
       '/absolue/path/write/foo.tsx',
       '/absolute/path/write/bar.tsx',
@@ -111,7 +123,8 @@ describe('build', () => {
   });
 
   describe('getWebcomponentFile', () => {
-    it('should return filename with .react2wc.ts extension instead of its original one', () => {
+    it('should return filename with .react2wc.ts extension instead of its original one', async () => {
+      const { getWebcomponentFile } = await import('./build');
       expect(getWebcomponentFile('')).toBe('.react2wc.ts');
       expect(getWebcomponentFile('hello-world.tsx')).toBe(
         'hello-world.react2wc.ts'

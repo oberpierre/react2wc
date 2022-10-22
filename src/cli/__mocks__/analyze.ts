@@ -1,9 +1,10 @@
+import { jest } from '@jest/globals';
 import type { CompilerOptions, Signature } from 'typescript';
 import ts from 'typescript';
 import type { ComponentAnalysis } from '../analyze.js';
 
 export const getTypescriptConfig: () => CompilerOptions | undefined = jest
-  .fn()
+  .fn<() => CompilerOptions | undefined>()
   .mockReturnValue(undefined);
 
 export const analyzeComponent: (

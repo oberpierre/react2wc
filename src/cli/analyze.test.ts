@@ -1,4 +1,11 @@
-import type { ParsedCommandLine, Program, SourceFile } from 'typescript';
+import { jest } from '@jest/globals';
+import type { MockInstance, SpyInstance } from 'jest-mock';
+import type {
+  ParsedCommandLine,
+  Program,
+  SourceFile,
+  TsConfigSourceFile,
+} from 'typescript';
 import ts from 'typescript';
 import { analyzeComponent, getTypescriptConfig } from './analyze';
 
@@ -11,7 +18,9 @@ describe('build', () => {
     it('should call typescript findConfigFile with the current working directory', () => {
       jest.spyOn(process, 'cwd').mockReturnValueOnce('/some/path/to/project');
       const config = { compilerOptions: { allowJs: true } };
-      const readFileMock = jest.fn().mockReturnValue(config);
+      const readFileMock = jest
+        .fn<(fileName: string) => TsConfigSourceFile>()
+        .mockReturnValue(config as unknown as TsConfigSourceFile);
       const findConfigFileSpy = jest
         .spyOn(ts, 'findConfigFile')
         .mockImplementation((file, cb) => {
@@ -78,19 +87,19 @@ describe('build', () => {
 
   describe('analyzeComponents', () => {
     const projectRootPath = '/some/path/to/project';
-    let getSourceFileMock: jest.MockInstance<
-      SourceFile | undefined,
-      [fileName: string]
-    >;
-    let createProgramSpy: jest.SpyInstance<
-      Program,
-      Parameters<typeof ts.createProgram>
-    >;
+    type getSourceFileSignatue = (fileName: string) => SourceFile | undefined;
+    let getSourceFileMock: MockInstance<getSourceFileSignatue>;
+    type createProgramSpySignature = (
+      ...args: Parameters<typeof ts.createProgram>
+    ) => Program;
+    let createProgramSpy: SpyInstance<createProgramSpySignature>;
     beforeAll(() => {
       const _createProgram = ts.createProgram;
-      getSourceFileMock = jest.fn().mockImplementation((file) => {
-        return ts.createSourceFile(file, ``, ts.ScriptTarget.Latest, true);
-      });
+      getSourceFileMock = jest
+        .fn<getSourceFileSignatue>()
+        .mockImplementation((file: string) => {
+          return ts.createSourceFile(file, ``, ts.ScriptTarget.Latest, true);
+        });
       createProgramSpy = jest
         .spyOn(ts, 'createProgram')
         .mockImplementation((file, options) => {

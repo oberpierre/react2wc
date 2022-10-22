@@ -26,13 +26,20 @@ module.exports = {
       statements: 60,
     },
   },
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
-    prefix: '<rootDir>/',
-  }),
-  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  extensionsToTreatAsEsm: ['.ts'],
+  moduleNameMapper: {
+    ...pathsToModuleNameMapper(compilerOptions.paths, {
+      prefix: '<rootDir>/',
+    }),
+    '^(\\.{1,2}/.*)\\.tsx?$': '$1',
+  },
   resolver: 'ts-jest-resolver',
+  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   transform: {
-    '^.+\\.[tj]sx?$': ['ts-jest', { tsconfig: './tsconfig.test.json' }],
+    '^.+\\.[tj]sx?$': [
+      'ts-jest',
+      { tsconfig: './tsconfig.test.json', useESM: true },
+    ],
   },
   transformIgnorePatterns: ['node_modules/(?!@?lit.*/)'],
 };
