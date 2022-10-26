@@ -1,26 +1,11 @@
 import 'abort-controller/polyfill.js';
-import { writeFile, WriteFileOptions } from 'fs';
-import { basename, extname, resolve } from 'path';
+import { basename, resolve } from 'path';
 import {
   analyzeComponent,
   ComponentAnalysis,
   getTypescriptConfig,
 } from './analyze.js';
-
-export const getWebcomponentFile: (file: string) => string = (file) => {
-  const extension = extname(file);
-  return file.substring(0, file.length - extension.length) + '.react2wc.ts';
-};
-
-export const createFile: (
-  outFile: string,
-  data: string | Buffer,
-  options?: WriteFileOptions
-) => Promise<void> = (outFile, data, opts = {}) => {
-  return new Promise<void>((resolve, reject) =>
-    writeFile(outFile, data, opts, (err) => (err ? reject(err) : resolve()))
-  );
-};
+import { createComponent } from './generator.js';
 
 const build = async (files: string[]): Promise<void> => {
   const tsConfig = getTypescriptConfig();
@@ -46,12 +31,11 @@ const build = async (files: string[]): Promise<void> => {
           return;
         }
 
-        const newFileName = getWebcomponentFile(targetComponent.file);
-        await createFile(newFileName, ``, {
+        await createComponent(targetComponent, {
           encoding: 'utf-8',
           signal: abort.signal,
         });
-        return console.log(basename(newFileName), 'created');
+        return console.log('Webcomponent for', basename(file), 'created');
       })
   )
     .then(() => console.log('Processing finished'))
