@@ -9,6 +9,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
+    "bundle": "node .build/bundle.js",
     "lint": "eslint . && prettier --check .",
     "prettify": "prettier --write .",
     "prepare": "husky install",
