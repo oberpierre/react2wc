@@ -7,13 +7,11 @@ describe('react2wc-testing-react18', () => {
         'node dist/bin/index.js build test/e2e/react18/src/lib/hello-world/hello-world.tsx',
         (err, stdout, stderr) => {
           if (err) throw err;
-          expect(stdout).toMatchInlineSnapshot(
-            `
-            "hello-world.react2wc.ts created
+          expect(stdout).toMatchInlineSnapshot(`
+            "Webcomponent for hello-world.tsx created
             Processing finished
             "
-          `
-          );
+          `);
           expect(stderr).toMatchInlineSnapshot(`""`);
           done();
         }
