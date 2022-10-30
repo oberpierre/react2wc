@@ -1,0 +1,15 @@
+import type { ComponentProps } from 'react';
+import { BaseElement } from 'react2wc';
+import {{importDeclaration}} from '{{importPath}}';
+
+type {{compTypeName}} = typeof {{importName}};
+
+export class HelloWorldWc extends BaseElement<{{compTypeName}}> {
+  async getComponent(): Promise<{{compTypeName}}> {
+    const {{dynamicImport}} = await import('{{importPath}}');
+    return {{importName}};
+  }
+  getProperties(): ComponentProps<{{compTypeName}}> {
+    return {};
+  }
+}

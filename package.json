@@ -4,14 +4,17 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": "dist/bin/index.js",
   "author": "Pierre Obermaier",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
+    "bundle": "node .build/bundle.js",
     "lint": "eslint . && prettier --check .",
     "prettify": "prettier --write .",
     "prepare": "husky install",
-    "test": "jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:e2e": "NODE_OPTIONS=--experimental-vm-modules jest --config=jest.e2e.config.cjs"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
@@ -19,6 +22,7 @@
   "devDependencies": {
     "@testing-library/dom": "^8.19.0",
     "@testing-library/jest-dom": "^5.16.5",
+    "@types/handlebars": "^4.1.0",
     "@types/jest": "^29.1.2",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
@@ -33,6 +37,7 @@
     "lint-staged": "^13.0.3",
     "prettier": "2.7.1",
     "ts-jest": "^29.0.3",
+    "ts-jest-resolver": "^2.0.0",
     "typescript": "*"
   },
   "engines": {
@@ -51,8 +56,11 @@
     "web"
   ],
   "dependencies": {
-    "@types/react": "^18.0.21",
+    "@types/react": ">= 16",
     "@types/react-dom": "^18.0.6",
+    "abort-controller": "^3.0.0",
+    "commander": "^9.4.1",
+    "handlebars": "^4.7.7",
     "lit": "^2.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

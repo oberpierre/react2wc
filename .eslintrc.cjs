@@ -15,13 +15,7 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  ignorePatterns: [
-    'node_modules',
-    'coverage',
-    'dist',
-    '.eslintrc.cjs',
-    'jest.config.cjs',
-  ],
+  ignorePatterns: ['node_modules', 'coverage', 'dist', '*.cjs'],
   plugins: ['@typescript-eslint'],
   rules: {},
 };

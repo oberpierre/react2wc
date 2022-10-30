@@ -1,0 +1,14 @@
+{
+  "name": "react2wc-testing-react18",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Pierre Obermaier",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  }
+}

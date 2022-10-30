@@ -1,24 +1,17 @@
+import { jest } from '@jest/globals';
+import { HelloWorld, HelloWorldComp, HelloWorldProps } from '@react2wc-test';
 import { getByRole, waitFor } from '@testing-library/dom';
 import { property } from 'lit/decorators.js';
-import * as React from 'react';
-import BaseElement from './base-element';
-
-type HelloWorldProps = {
-  name: string;
-};
-
-const HelloWorld: React.FunctionComponent<HelloWorldProps> = ({ name }) => {
-  return React.createElement('h1', null, [`Hello ${name}`]);
-};
-
-type HelloWorldComp = typeof HelloWorld;
+import BaseElement from './base-element.js';
 
 class HelloWorldWebcomponent extends BaseElement<HelloWorldComp> {
   @property({ type: String })
   name: string | undefined;
 
-  getComponent(): Promise<React.FunctionComponent<HelloWorldProps>> {
-    return Promise.resolve(HelloWorld);
+  getComponent(): Promise<HelloWorldComp> {
+    return Promise.resolve(
+      (HelloWorld as unknown as { default: HelloWorldComp }).default
+    );
   }
 
   getProperties(): HelloWorldProps {
