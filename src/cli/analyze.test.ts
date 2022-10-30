@@ -47,7 +47,7 @@ describe('build', () => {
       );
       expect(readJsonConfigFile).toHaveBeenCalledTimes(1);
       expect(readJsonConfigFile).toHaveBeenCalledWith(
-        '/some/path/to/project/tsconfig.test.json',
+        '/some/path/to/project/tsconfig.json',
         expect.any(Function)
       );
       expect(parseJsonSourceFileConfigFileContent).toHaveBeenCalledTimes(1);

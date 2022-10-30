@@ -22,9 +22,8 @@ export const getTypescriptConfig: () => CompilerOptions | undefined = () => {
     return true;
   });
   if (configFilename) {
-    const config = ts.readJsonConfigFile(
-      configFilename.replace('.json', '.test.json'),
-      (file) => readFileSync(file).toString()
+    const config = ts.readJsonConfigFile(configFilename, (file) =>
+      readFileSync(file).toString()
     );
     const parsedConfig = ts.parseJsonSourceFileConfigFileContent(
       config,
