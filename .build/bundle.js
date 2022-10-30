@@ -1,11 +1,10 @@
 import { exec } from 'child_process';
 import { copyFile, mkdir, readdir, rm, stat } from 'fs/promises';
 import { dirname, relative, resolve } from 'path';
-import config from '../tsconfig.json' assert { type: 'json' };
 
 const currentDir = process.cwd();
-const outDir = config?.compilerOptions?.outDir ?? 'dist';
-const rootDir = config?.compilerOptions?.rootDir ?? 'src';
+const outDir = 'dist';
+const rootDir = 'src';
 
 console.log(`Cleaning destination folder ${outDir}...`);
 await rm(outDir, { recursive: true, force: true });
@@ -55,22 +54,12 @@ const copyFiles = async (
   return await Promise.all(resolvedFiles);
 };
 
-// Copy package.json and documentation
 const copyDocumentation = copyFiles(
   currentDir,
   (file) =>
     file === 'package.json' || file.endsWith('.md') || file === 'LICENSE'
 );
 
-// Copy templates
-// const copyNonTsSourceFiles = mkdir(resolve(outDir, 'templates'), {
-//   recursive: true,
-// }).then(() =>
-//   copyFile(
-//     resolve(currentDir, 'src/templates/react2wc.handlebars'),
-//     resolve(outDir, 'templates/react2wc.handlebars')
-//   )
-// );
 const copyNonTsSourceFiles = copyFiles(
   rootDir,
   (file) => file.endsWith('.hbs') || file.endsWith('.handlebars'),

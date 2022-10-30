@@ -43,11 +43,8 @@ describe('generator', () => {
         expect.any(Function)
       );
       expect(
-        (
-          fs.writeFile as unknown as jest.MockedFunction<WriteFileSpy>
-        ).mock.calls
-          .at(0)
-          ?.at(1)
+        (fs.writeFile as unknown as jest.MockedFunction<WriteFileSpy>).mock
+          .calls[0]?.[1]
       ).toMatchInlineSnapshot(`
         "import type { ComponentProps } from 'react';
         import { BaseElement } from 'react2wc';
