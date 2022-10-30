@@ -17,7 +17,7 @@ const promisify = (
 
 describe('react2wc', () => {
   it('should return semver when using version', async () => {
-    const actual = await promisify(exec)('node dist/bin/index.js -V').then(
+    const actual = await promisify(exec)('node dist/bin/index.js -v').then(
       ([stdout]) => {
         return stdout.trim();
       }
