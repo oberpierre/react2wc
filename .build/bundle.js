@@ -54,16 +54,10 @@ const copyFiles = async (
   return await Promise.all(resolvedFiles);
 };
 
-const copyDocumentation = copyFiles(
-  currentDir,
-  (file) =>
-    file === 'package.json' || file.endsWith('.md') || file === 'LICENSE'
-);
-
 const copyNonTsSourceFiles = copyFiles(
   rootDir,
   (file) => file.endsWith('.hbs') || file.endsWith('.handlebars'),
   true
 );
 
-await Promise.all([execPromise, copyDocumentation, copyNonTsSourceFiles]);
+await Promise.all([execPromise, copyNonTsSourceFiles]);
