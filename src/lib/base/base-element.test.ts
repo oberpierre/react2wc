@@ -1,5 +1,12 @@
 import { jest } from '@jest/globals';
-import { HelloWorld, HelloWorldComp, HelloWorldProps } from '@react2wc-test';
+import {
+  HelloWorld,
+  HelloWorldComp,
+  HelloWorldProps,
+  MountUnmount,
+  MountUnmountComp,
+  MountUnmountProps,
+} from '@react2wc-test';
 import { getByRole, waitFor } from '@testing-library/dom';
 import { property } from 'lit/decorators.js';
 import BaseElement from './base-element.js';
@@ -178,5 +185,49 @@ describe('BaseElement', () => {
     expect(errorSpy).toHaveBeenLastCalledWith(
       new Error('Unexpected error while rerendering component.')
     );
+  });
+
+  it('should call the mount and unmount lifecycle of the component', async () => {
+    const _mount = jest.fn();
+    const _unmount = jest.fn();
+    class MountUnmountWc extends BaseElement<MountUnmountComp> {
+      getComponent(): Promise<MountUnmountComp> {
+        return Promise.resolve(
+          (MountUnmount as unknown as { default: MountUnmountComp }).default
+        );
+      }
+
+      getProperties(): MountUnmountProps {
+        return {
+          mount: _mount,
+          unmount: _unmount,
+        };
+      }
+    }
+
+    customElements.define('mount-unmount', MountUnmountWc);
+
+    const test = new MountUnmountWc();
+
+    expect(_mount).not.toHaveBeenCalled();
+    expect(_unmount).not.toHaveBeenCalled();
+
+    document.body.appendChild(test);
+
+    await waitFor(() =>
+      expect(
+        getByRole(asHtmlElement(test.shadowRoot), 'heading', {
+          name: 'Mount Unmount',
+        })
+      ).toBeInTheDocument()
+    );
+
+    expect(_mount).toHaveBeenCalledTimes(1);
+    expect(_unmount).not.toHaveBeenCalled();
+
+    document.body.removeChild(test);
+
+    expect(_mount).toHaveBeenCalledTimes(1);
+    expect(_unmount).toHaveBeenCalledTimes(1);
   });
 });
