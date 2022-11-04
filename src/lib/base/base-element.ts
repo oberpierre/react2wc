@@ -87,6 +87,11 @@ abstract class BaseElement<
   abstract getComponent(): Promise<T>;
 
   abstract getProperties(): P;
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.root?.unmount();
+  }
 }
 
 export default BaseElement;
